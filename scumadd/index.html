@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Connexion / Inscription</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #0a1a2f 60%, #0099cc 100%);
+      color: #fff;
+      font-family: 'Montserrat', Arial, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background 0.6s;
+    }
+    .login-container {
+      background: rgba(20,40,60,0.92);
+      padding: 40px 32px 32px 32px;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px #0008;
+      min-width: 340px;
+      width: 100%;
+      max-width: 370px;
+      text-align: center;
+      position: relative;
+      animation: fadeIn 0.8s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(40px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .login-container h2 {
+      margin-bottom: 22px;
+      font-size: 2em;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #00e5ff;
+      text-shadow: 0 0 10px #0099cc88;
+    }
+    .login-container input {
+      width: 92%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: none;
+      font-size: 1.08em;
+      background: #162a40;
+      color: #fff;
+      box-shadow: 0 2px 8px #0003;
+      transition: background 0.2s;
+    }
+    .login-container input:focus {
+      background: #1e3a5c;
+      outline: 2px solid #00e5ff;
+    }
+    .login-container button {
+      width: 98%;
+      padding: 12px;
+      margin: 14px 0;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(90deg, #0099cc 60%, #00e5ff 100%);
+      color: #fff;
+      font-size: 1.08em;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #0099cc44;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .login-container button:hover {
+      background: linear-gradient(90deg, #0077aa 60%, #00e5ff 100%);
+      transform: translateY(-2px) scale(1.03);
+    }
+    .switch-btn {
+      background: linear-gradient(90deg, #22cc88 60%, #00e5ff 100%);
+      margin-top: 10px;
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 2px 8px #22cc8844;
+    }
+    .switch-btn:hover {
+      background: linear-gradient(90deg, #1a9955 60%, #00e5ff 100%);
+    }
+    .error {
+      color: #ff4444;
+      margin-top: 8px;
+      font-size: 1em;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      min-height: 22px;
+      transition: opacity 0.2s;
+    }
+    .profile-logo {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: #fff;
+      overflow: hidden;
+      box-shadow: 0 2px 12px #0099cc66;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #00e5ff;
+      animation: fadeIn 0.7s;
+    }
+    .profile-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .profile-name {
+      position: absolute;
+      top: 26px;
+      right: 80px;
+      color: #fff;
+      font-size: 1.08em;
+      font-weight: 700;
+      text-shadow: 0 0 8px #0099cc;
+      letter-spacing: 1px;
+      animation: fadeIn 0.7s;
+    }
+    #logoutBtn {
+      position: absolute;
+      top: 80px;
+      right: 18px;
+      padding: 7px 18px;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #ff4444 60%, #ff8800 100%);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 2px 8px #ff444444;
+      transition: background 0.2s, transform 0.2s;
+    }
+    #logoutBtn:hover {
+      background: linear-gradient(90deg, #cc2222 60%, #ff8800 100%);
+      transform: scale(1.05);
+    }
+    /* Styles pour le tableau de bord admin */
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      background: rgba(20,40,60,0.96);
+      border-radius: 18px;
+      box-shadow: 0 8px 32px #0008;
+      padding: 32px 40px;
+    }
+    h1 {
+      text-align: center;
+      color: #00e5ff;
+      margin-bottom: 32px;
+      font-size: 2.5em;
+      text-shadow: 0 0 10px #0099cc88;
+    }
+    .stats {
+      display: flex;
+      gap: 32px;
+      justify-content: center;
+      margin-bottom: 32px;
+    }
+    .stat-box {
+      background: #162a40;
+      border-radius: 12px;
+      padding: 24px 32px;
+      font-size: 1.3em;
+      font-weight: 700;
+      color: #00e5ff;
+      box-shadow: 0 2px 12px #0099cc44;
+      text-align: center;
+      min-width: 180px;
+    }
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .search-bar input {
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1em;
+      background: #1e3a5c;
+      color: #fff;
+      width: 260px;
+    }
+    .search-bar button {
+      padding: 10px 22px;
+      border-radius: 8px;
+      background: linear-gradient(90deg,#0099cc 60%,#00e5ff 100%);
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    .section-title {
+      margin-top: 38px;
+      margin-bottom: 18px;
+      font-size: 1.5em;
+      color: #00e5ff;
+      text-shadow: 0 0 8px #0099cc88;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #162a40;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+    th, td {
+      padding: 12px 10px;
+      text-align: left;
+      border-bottom: 1px solid #243a5c;
+    }
+    th {
+      background: #1e3a5c;
+      color: #00e5ff;
+      font-weight: 700;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    .veh-state.available { color: #00ff88; font-weight: 700;}
+    .veh-state.destroyed { color: #ff4444; font-weight: 700;}
+    .actions-cell button {
+      margin-right: 8px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: none;
+      background: #ff8800;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.95em;
+      transition: background 0.2s;
+    }
+    .actions-cell button:hover {
+      background: #ff4444;
+    }
+    .logs-section {
+      background: #121212;
+      padding: 18px;
+      border-radius: 10px;
+      max-height: 180px;
+      overflow: auto;
+      color: #eee;
+      font-size: 0.98em;
+      margin-bottom: 32px;
+    }
+    .quick-actions {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .quick-actions button {
+      padding: 10px 22px;
+      border-radius: 8px;
+      background: linear-gradient(90deg,#0099cc 60%,#00e5ff 100%);
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      font-size: 1em;
+      box-shadow: 0 2px 8px #0099cc44;
+      transition: background 0.2s;
+    }
+    .quick-actions button:hover {
+      background: linear-gradient(90deg,#ff4444 60%,#ff8800 100%);
+    }
+  </style>
+</head>
+<body>
+<div class="login-container">
+  <div id="profileSection" style="display:none; text-align:center; margin-top:30px;">
+    <div class="profile-logo" style="margin:auto;">
+      <img id="profileImg" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profil">
+    </div>
+    <span class="profile-name" id="profileName" style="display:block; margin-top:12px; font-size:1.2em; font-weight:700; color:#00e5ff;">
+      Bienvenue, <span id="profileUser"></span> !
+    </span>
+    <div style="margin-top:24px;">
+      <button id="logoutBtn" style="padding:10px 28px; border-radius:8px; background:linear-gradient(90deg,#ff4444 60%,#ff8800 100%); color:#fff; font-weight:600; border:none; box-shadow:0 2px 8px #ff444444; display:none;">Déconnexion</button>
+    </div>
+  </div>
+  <div id="loader" style="display:none; margin: 30px auto;">
+    <svg width="48" height="48" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="20" stroke="#00e5ff" stroke-width="4" fill="none" stroke-linecap="round"
+        stroke-dasharray="100" stroke-dashoffset="60">
+        <animateTransform attributeName="transform" type="rotate" from="0 24 24" to="360 24 24"
+          dur="1s" repeatCount="indefinite"/>
+      </circle>
+    </svg>
+    <div style="color:#00e5ff;font-weight:600;margin-top:10px;">Chargement...</div>
+  </div>
+  <h2 id="formTitle">Connexion</h2>
+  <form id="userForm">
+    <input type="text" id="username" name="username" placeholder="Nom d'utilisateur" autocomplete="username" required>
+    <input type="email" id="userEmail" name="email" placeholder="Adresse email" autocomplete="email" style="display:none;">
+    <input type="password" id="userPassword" name="password" placeholder="Mot de passe" autocomplete="current-password" required>
+    <button type="submit" id="mainBtn">Se connecter</button>
+    <div id="errorMsg" class="error"></div>
+    <div style="margin-top:8px;">
+      <a href="#" id="forgotPasswordLink" style="color:#00e5ff; text-decoration:underline; cursor:pointer; font-size:0.98em;">Mot de passe oublié ?</a>
+    </div>
+  </form>
+  <button class="switch-btn" id="switchFormBtn">Créer un compte</button>
+  <!-- <button class="admin-btn" id="adminLoginBtn">Accès Admin</button> -->
+
+  <!-- Section pour la réinitialisation du mot de passe -->
+  <div id="forgotPasswordSection" style="display:none; margin-top:20px; text-align:center;">
+    <h3>Réinitialiser le mot de passe</h3>
+    <input type="email" id="resetEmail" placeholder="Votre adresse email" required>
+    <button id="sendCodeBtn">Envoyer le code</button>
+    <div id="resetMsg" style="margin-top:8px; font-weight:600;"></div>
+  </div>
+
+  <div id="codeSection" style="display:none; margin-top:20px; text-align:center;">
+    <h3>Entrez le code reçu</h3>
+    <input type="text" id="resetCode" placeholder="Code reçu par email" required>
+    <button id="verifyCodeBtn">Valider le code</button>
+    <div id="codeMsg" style="margin-top:8px; font-weight:600;"></div>
+  </div>
+
+  <div id="changePasswordSection" style="display:none; margin-top:20px; text-align:center;">
+    <h3>Changer le mot de passe</h3>
+    <input type="password" id="currentPassword" placeholder="Mot de passe actuel" required style="display:none;">
+    <input type="password" id="newPassword" placeholder="Nouveau mot de passe" required>
+    <input type="password" id="confirmPassword" placeholder="Confirmer le nouveau mot de passe" required>
+    <button id="changePasswordBtn">Modifier le mot de passe</button>
+    <div id="passwordMsg" style="margin-top:8px; font-weight:600;"></div>
+    <div style="margin-top:10px;">
+      <a href="#" id="backToLogin" style="color:#00e5ff; text-decoration:underline; cursor:pointer; font-size:0.98em;">Retour à la connexion</a>
+      <button id="backHomeBtn" style="margin-left:10px; padding:8px 18px; border-radius:8px; background:linear-gradient(90deg,#0099cc 60%,#00e5ff 100%); color:#fff; font-weight:600; border:none; cursor:pointer;">Retour accueil</button>
+    </div>
+  </div>
+
+  <div id="globalLoader" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(10,30,60,0.85); z-index:99999; align-items:center; justify-content:center;">
+    <div style="margin:auto; text-align:center;">
+      <svg width="64" height="64" viewBox="0 0 48 48">
+        <circle cx="24" cy="24" r="20" stroke="#00e5ff" stroke-width="4" fill="none" stroke-linecap="round"
+          stroke-dasharray="100" stroke-dashoffset="60">
+          <animateTransform attributeName="transform" type="rotate" from="0 24 24" to="360 24 24"
+            dur="1s" repeatCount="indefinite"/>
+        </circle>
+      </svg>
+      <div style="color:#00e5ff;font-weight:600;margin-top:10px;">Chargement...</div>
+    </div>
+  </div>
+</div>
+
+<!-- Tableau de bord admin (caché par défaut) -->
+<div class="dashboard-container" id="adminDashboard" style="display:none;">
+  <h1>SCUM Admin Dashboard</h1>
+  <div class="stats">
+    <div class="stat-box">Joueurs connectés : <span id="playerCount">0</span></div>
+    <div class="stat-box">Admins connectés : <span id="adminCount">0</span></div>
+    <div class="stat-box">Véhicules : <span id="vehicleCount">0</span></div>
+  </div>
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Rechercher joueur, véhicule, ID...">
+    <button onclick="searchDashboard()">Rechercher</button>
+  </div>
+  <div class="quick-actions">
+    <button onclick="restartServer()">Redémarrer serveur</button>
+    <button onclick="backupServer()">Backup serveur</button>
+    <button onclick="clearLogs()">Vider les logs</button>
+  </div>
+  <div class="section-title">🚗 Véhicules sur le serveur</div>
+  <table id="vehTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Type</th>
+        <th>Position</th>
+        <th>État</th>
+        <th>Propriétaire</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Rempli dynamiquement -->
+    </tbody>
+  </table>
+  <div class="section-title">👥 Joueurs connectés</div>
+  <table id="playerTable">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>ID</th>
+        <th>Rôle</th>
+        <th>Position</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Rempli dynamiquement -->
+    </tbody>
+  </table>
+  <div class="section-title">📜 Logs serveur</div>
+  <div class="logs-section" id="serverLogs">
+    <em>Aucun log pour le moment.</em>
+  </div>
+</div>
+
+<script>
+function setProfile(username){
+  document.getElementById('profileSection').style.display = 'block';
+  document.getElementById('profileUser').textContent = username;
+  document.getElementById('userForm').style.display = 'none';
+  document.getElementById('switchFormBtn').style.display = 'none';
+  document.getElementById('formTitle').textContent = 'Bienvenue !';
+  document.getElementById('logoutBtn').style.display = 'inline-block'; // Affiche le bouton seulement après connexion
+}
+
+let isRegister = false;
+document.getElementById('switchFormBtn').addEventListener('click', function(){
+  isRegister = !isRegister;
+  document.getElementById('formTitle').textContent = isRegister ? 'Inscription' : 'Connexion';
+  document.getElementById('mainBtn').textContent = isRegister ? 'Créer le compte' : 'Se connecter';
+  this.textContent = isRegister ? 'Déjà inscrit ? Se connecter' : 'Créer un compte';
+  document.getElementById('errorMsg').textContent = '';
+  document.getElementById('userEmail').style.display = isRegister ? '' : 'none';
+  document.getElementById('userEmail').required = isRegister; // <-- AJOUTÉ
+});
+
+document.getElementById('userForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const username = document.getElementById('username').value.trim();
+  const email = document.getElementById('userEmail').value.trim();
+  const password = document.getElementById('userPassword').value;
+  const errorMsg = document.getElementById('errorMsg');
+  const loader = document.getElementById('loader');
+  const globalLoader = document.getElementById('globalLoader');
+
+  if(isRegister && (!username || !email || !password)){
+    errorMsg.textContent = "Veuillez remplir tous les champs.";
+    return;
+  }
+  if(!isRegister && (!username || !password)){
+    errorMsg.textContent = "Veuillez remplir tous les champs.";
+    return;
+  }
+
+  loader.style.display = "block";
+  globalLoader.style.display = "block";
+  errorMsg.textContent = "";
+
+  const url = isRegister ? 'register.php' : 'login.php';
+  const formData = new FormData();
+  formData.append('username', username);
+  formData.append('password', password);
+  if(isRegister) formData.append('email', email);
+
+  fetch(url, { method:'POST', body:formData })
+    .then(res => res.json())
+    .then(data => {
+      console.log('Réponse backend:', data);
+      loader.style.display = "none";
+      globalLoader.style.display = "none";
+      if(data.status === 'success'){
+        setProfile(username);
+        setTimeout(()=> window.location.href = data.redirect, 700);
+      } else {
+        errorMsg.textContent = data.message;
+      }
+    })
+    .catch(err => {
+      loader.style.display = "none";
+      globalLoader.style.display = "none";
+      errorMsg.textContent = "Erreur serveur";
+    });
+});
+
+document.getElementById('logoutBtn').addEventListener('click', function() {
+  document.getElementById('profileSection').style.display = 'none';
+  document.getElementById('userForm').style.display = '';
+  document.getElementById('switchFormBtn').style.display = '';
+  document.getElementById('formTitle').textContent = 'Connexion';
+  document.getElementById('errorMsg').textContent = '';
+  document.getElementById('username').value = '';
+  document.getElementById('userPassword').value = '';
+  document.getElementById('userEmail').value = '';
+  document.getElementById('userEmail').style.display = 'none';
+  document.getElementById('logoutBtn').style.display = 'none'; // Cache le bouton après déconnexion
+  document.getElementById('changePasswordSection').style.display = 'block';
+});
+
+// Envoi du code par email
+document.getElementById('sendCodeBtn').addEventListener('click', function() {
+  const email = document.getElementById('resetEmail').value.trim();
+  const msg = document.getElementById('resetMsg');
+  msg.textContent = '';
+  if(!email){
+    msg.textContent = "Veuillez entrer votre adresse email.";
+    return;
+  }
+  const formData = new FormData();
+  formData.append('email', email);
+  fetch('send_reset_code.php', { method:'POST', body:formData })
+    .then(res => res.json())
+    .then(data => {
+      msg.textContent = data.message;
+      if(data.status === 'success'){
+        document.getElementById('forgotPasswordSection').style.display = 'none';
+        document.getElementById('codeSection').style.display = 'block';
+      }
+    })
+    .catch(() => { msg.textContent = "Erreur serveur"; });
+});
+
+// Vérification du code reçu
+document.getElementById('verifyCodeBtn').addEventListener('click', function() {
+  const code = document.getElementById('resetCode').value.trim();
+  const msg = document.getElementById('codeMsg');
+  msg.textContent = '';
+  if(!code){
+    msg.textContent = "Veuillez entrer le code reçu.";
+    return;
+  }
+  const formData = new FormData();
+  formData.append('code', code);
+  fetch('verify_reset_code.php', { method:'POST', body:formData })
+    .then(res => res.json())
+    .then(data => {
+      msg.textContent = data.message;
+      if(data.status === 'success'){
+        document.getElementById('codeSection').style.display = 'none';
+        document.getElementById('changePasswordSection').style.display = 'block';
+      }
+    })
+    .catch(() => { msg.textContent = "Erreur serveur"; });
+});
+
+// Changement du mot de passe (déjà présent)
+document.getElementById('changePasswordBtn').addEventListener('click', function() {
+  const newPass = document.getElementById('newPassword').value;
+  const confirm = document.getElementById('confirmPassword').value;
+  const msg = document.getElementById('passwordMsg');
+  msg.textContent = '';
+  if(!newPass || !confirm) {
+    msg.textContent = "Veuillez remplir tous les champs.";
+    return;
+  }
+  if(newPass !== confirm){
+    msg.textContent = "Les nouveaux mots de passe ne correspondent pas.";
+    return;
+  }
+  const formData = new FormData();
+  formData.append('newPassword', newPass);
+  fetch('change_password.php', { method:'POST', body:formData })
+    .then(res => res.json())
+    .then(data => {
+      msg.textContent = data.message;
+      if(data.status === 'success'){
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmPassword').value = '';
+      }
+    })
+    .catch(() => { msg.textContent = "Erreur serveur"; });
+});
+
+document.getElementById('forgotPasswordLink').addEventListener('click', function(e){
+  e.preventDefault();
+  document.getElementById('userForm').style.display = 'none';
+  document.getElementById('switchFormBtn').style.display = 'none';
+  document.getElementById('forgotPasswordSection').style.display = 'block';
+  document.getElementById('formTitle').textContent = 'Mot de passe oublié';
+});
+
+// Retour à la connexion
+document.getElementById('backToLogin').addEventListener('click', function(e){
+  e.preventDefault();
+  document.getElementById('changePasswordSection').style.display = 'none';
+  document.getElementById('forgotPasswordSection').style.display = 'none';
+  document.getElementById('codeSection').style.display = 'none';
+  document.getElementById('userForm').style.display = '';
+  document.getElementById('switchFormBtn').style.display = '';
+  document.getElementById('formTitle').textContent = 'Connexion';
+  document.getElementById('passwordMsg').textContent = '';
+  document.getElementById('resetMsg').textContent = '';
+  document.getElementById('codeMsg').textContent = '';
+  document.getElementById('resetEmail').value = '';
+  document.getElementById('resetCode').value = '';
+  document.getElementById('newPassword').value = '';
+  document.getElementById('confirmPassword').value = '';
+});
+
+document.getElementById('backHomeBtn').addEventListener('click', function(e){
+  e.preventDefault();
+  window.location.href = 'index.html'; // ou la page d'accueil de ton site
+});
+
+// Fonctions pour le tableau de bord admin (à compléter)
+function searchDashboard() {
+  const val = document.getElementById('searchInput').value.toLowerCase();
+  // À compléter dans script.js : filterVehicleTable(val); filterPlayerTable(val);
+}
+function restartServer() { alert("Redémarrage demandé !"); }
+function backupServer() { alert("Backup demandé !"); }
+function clearLogs() { document.getElementById('serverLogs').innerHTML = "<em>Logs vidés.</em>"; }
+
+// Simulation de données pour le tableau de bord (à remplacer par des données réelles)
+document.getElementById('playerCount').textContent = 12;
+document.getElementById('adminCount').textContent = 3;
+document.getElementById('vehicleCount').textContent = 45;
+
+// Remplissage dynamique des tableaux (à remplacer par des données réelles)
+const vehicles = [
+  {id: 1, type: 'Voiture', position: '45.123, -93.123', state: 'available', owner: 'JohnDoe'},
+  {id: 2, type: 'Moto', position: '45.124, -93.124', state: 'destroyed', owner: 'JaneDoe'},
+  // Ajoute d'autres véhicules si nécessaire
+];
+
+const players = [
+  {name: 'JohnDoe', id: 1, role: 'Joueur', position: '45.123, -93.123'},
+  {name: 'JaneDoe', id: 2, role: 'Admin', position: '45.124, -93.124'},
+  // Ajoute d'autres joueurs si nécessaire
+];
+
+function fillVehicleTable() {
+  const tableBody = document.getElementById('vehTable').querySelector('tbody');
+  tableBody.innerHTML = '';
+  vehicles.forEach(v => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${v.id}</td>
+      <td>${v.type}</td>
+      <td>${v.position}</td>
+      <td class="veh-state ${v.state}">${v.state.charAt(0).toUpperCase() + v.state.slice(1)}</td>
+      <td>${v.owner}</td>
+      <td class="actions-cell">
+        <button onclick="editVehicle(${v.id})">Modifier</button>
+        <button onclick="deleteVehicle(${v.id})">Supprimer</button>
+      </td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
+function fillPlayerTable() {
+  const tableBody = document.getElementById('playerTable').querySelector('tbody');
+  tableBody.innerHTML = '';
+  players.forEach(p => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${p.name}</td>
+      <td>${p.id}</td>
+      <td>${p.role}</td>
+      <td>${p.position}</td>
+      <td class="actions-cell">
+        <button onclick="viewPlayer(${p.id})">Voir</button>
+        <button onclick="kickPlayer(${p.id})">Expulser</button>
+      </td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
+// Appel initial des fonctions de remplissage de tableau
+fillVehicleTable();
+fillPlayerTable();
+</script>
+</body>
+</html>

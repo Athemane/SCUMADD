@@ -1,0 +1,366 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['username'])) {
+    header('Location: index.html');
+    exit;
+}
+if (!isset($_SESSION['username']) || $_SESSION['username'] !== 'admin') {
+    header('Location: pagewithoutadminacces.html');
+    exit;
+}
+?>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>SCUM Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background: linear-gradient(135deg, #0a1a2f 60%, #0099cc 100%);
+      font-family: 'Montserrat', Arial, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      transition: background 0.6s;
+    }
+    .sidebar {
+      position: fixed;
+      left: 0; top: 0; bottom: 0;
+      width: 70px;
+      background: #162a40;
+      box-shadow: 2px 0 12px #0006;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 30px;
+      z-index: 100;
+    }
+    .sidebar .icon-btn {
+      background: none;
+      border: none;
+      color: #00e5ff;
+      font-size: 2em;
+      margin: 18px 0;
+      cursor: pointer;
+      transition: color 0.2s, transform 0.2s;
+    }
+    .sidebar .icon-btn:hover {
+      color: #ff8800;
+      transform: scale(1.15);
+    }
+    .dashboard {
+      margin-left: 90px;
+      background: rgba(20,40,60,0.92);
+      padding: 40px 32px 32px 32px;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px #0008;
+      max-width: 900px;
+      margin: 60px auto;
+      position: relative;
+      animation: fadeIn 0.8s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(40px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    h1 {
+      font-size: 2.5em;
+      text-align: center;
+      margin-bottom: 38px;
+      color: #00e5ff;
+      text-shadow: 0 0 12px #0099cc88;
+      font-weight: 700;
+      letter-spacing: 1px;
+      animation: fadeIn 1.2s;
+    }
+    h2 {
+      border-left: 4px solid #00e5ff;
+      padding-left: 10px;
+      margin-top: 30px;
+      color: #00e5ff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.25em;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 8px #0099cc44;
+      animation: fadeIn 1.3s;
+    }
+    h2 .icon {
+      font-size: 1.3em;
+      transition: transform .3s, color .3s, text-shadow .3s;
+      cursor: pointer;
+    }
+    h2 .icon:hover {
+      transform: scale(1.2) rotate(2deg);
+      color: #00e5ff;
+      text-shadow: 0 0 8px #00e5ff;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      background: rgba(12, 12, 12, 0.92);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.08);
+      backdrop-filter: blur(2px);
+      animation: fadeIn 1.4s;
+    }
+    th, td { padding: 12px 15px; text-align: left; }
+    th {
+      background: #121212;
+      color: #00e5ff;
+      text-transform: uppercase;
+      font-size: 13px;
+      border-bottom: 1px solid #1f1f1f;
+      letter-spacing: 1px;
+    }
+    tr:nth-child(even) { background: #0e0e0e; }
+    tr:hover { background: rgba(0, 229, 255, 0.05); }
+    .stats { margin-top: 15px; }
+    .stat-box {
+      display: inline-block;
+      background: rgba(12, 12, 12, 0.92);
+      padding: 15px 22px;
+      margin: 10px 14px 10px 0;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      border: 1px solid #1a1a1a;
+      box-shadow: inset 0 0 10px rgba(0, 229, 255, 0.12);
+      transition: transform .25s, box-shadow .25s;
+      backdrop-filter: blur(2px);
+      color: #fff;
+      animation: fadeIn 1.5s;
+    }
+    .stat-box span { color: #00e5ff; font-size: 22px; }
+    .stat-box:hover { transform: translateY(-3px); box-shadow: 0 0 12px rgba(0, 229, 255, 0.22); }
+    .veh-state {
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .veh-state.available {
+      background: rgba(0, 200, 100, 0.15);
+      color: #00ff88;
+      border: 1px solid rgba(0, 200, 100, 0.4);
+      box-shadow: 0 0 6px rgba(0, 200, 100, 0.25);
+    }
+    .veh-state.destroyed {
+      background: rgba(200, 0, 0, 0.15);
+      color: #ff4d4d;
+      border: 1px solid rgba(200, 0, 0, 0.4);
+      box-shadow: 0 0 6px rgba(200, 0, 0, 0.25);
+    }
+    .admin-actions {
+      margin-top: 30px;
+      text-align: right;
+    }
+    .admin-btn {
+      display: inline-block;
+      padding: 10px 28px;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #ff8800 60%, #ff4444 100%);
+      color: #fff;
+      font-size: 1.08em;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #ff880044;
+      border: none;
+      transition: background 0.2s, transform 0.2s;
+      text-decoration: none;
+      letter-spacing: 1px;
+      margin-left: 12px;
+    }
+    .admin-btn:hover {
+      background: linear-gradient(90deg, #cc6600 60%, #ff4444 100%);
+      transform: translateY(-2px) scale(1.03);
+    }
+    .profile-logo {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: #fff;
+      overflow: hidden;
+      box-shadow: 0 2px 12px #0099cc66;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #00e5ff;
+      animation: fadeIn 0.7s;
+    }
+    .profile-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .profile-name {
+      position: absolute;
+      top: 26px;
+      right: 80px;
+      color: #fff;
+      font-size: 1.08em;
+      font-weight: 700;
+      text-shadow: 0 0 8px #0099cc;
+      letter-spacing: 1px;
+      animation: fadeIn 0.7s;
+    }
+    .search-bar {
+      margin: 18px 0 10px 0;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .search-bar input {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1em;
+      background: #1e3a5c;
+      color: #fff;
+      width: 220px;
+    }
+    .search-bar button {
+      padding: 8px 18px;
+      border-radius: 8px;
+      background: linear-gradient(90deg,#0099cc 60%,#00e5ff 100%);
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+    .server-status {
+      margin: 10px 0 20px 0;
+      padding: 10px 18px;
+      border-radius: 8px;
+      background: #121212;
+      color: #00e5ff;
+      font-weight: 600;
+      display: inline-block;
+      box-shadow: 0 2px 8px #0099cc44;
+    }
+    .actions-cell button {
+      margin-right: 8px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: none;
+      background: #ff8800;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.95em;
+      transition: background 0.2s;
+    }
+    .actions-cell button:hover {
+      background: #ff4444;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <button class="icon-btn" title="Véhicules" onclick="scrollToSection('vehTable')">🚗</button>
+    <button class="icon-btn" title="Joueurs" onclick="scrollToSection('playerTable')">👥</button>
+    <button class="icon-btn" title="Logs" onclick="scrollToSection('logsSection')">📜</button>
+    <button class="icon-btn" title="Paramètres" onclick="scrollToSection('settingsSection')">⚙️</button>
+    <a href="index.html" class="icon-btn" title="Déconnexion">⏏️</a>
+  </div>
+  <div class="dashboard">
+    <div id="profileSection" style="display:block;">
+      <div class="profile-logo">
+        <img id="profileImg" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profil">
+      </div>
+      <span class="profile-name" id="profileName">Admin</span>
+    </div>
+    <h1>SCUM Server Dashboard</h1>
+    <div class="server-status" id="serverStatus">Serveur: <span style="color:#00ff88;">En ligne</span></div>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Rechercher un joueur, véhicule, ID...">
+      <button onclick="searchDashboard()">Rechercher</button>
+    </div>
+    <h2><span class="icon">🚗</span> Véhicules sur le serveur</h2>
+    <table id="vehTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Type</th>
+          <th>Position</th>
+          <th>État</th>
+          <th>Propriétaire</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Les lignes de véhicules seront ajoutées dynamiquement par script.js -->
+      </tbody>
+    </table>
+    <h2><span class="icon">👥</span> Joueurs connectés</h2>
+    <table id="playerTable">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>ID</th>
+          <th>Rôle</th>
+          <th>Position</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Les lignes de joueurs seront ajoutées dynamiquement par script.js -->
+      </tbody>
+    </table>
+    <div class="stats">
+      <div class="stat-box">Joueurs connectés : <span id="playerCount">0</span></div>
+      <div class="stat-box"><span class="icon">🛡️</span> Admins connectés : <span id="adminCount">0</span></div>
+      <div class="stat-box">Véhicules : <span id="vehicleCount">0</span></div>
+    </div>
+    <h2 id="logsSection"><span class="icon">📜</span> Logs serveur</h2>
+    <div style="background:#121212;padding:18px;border-radius:10px;max-height:180px;overflow:auto;color:#eee;font-size:0.98em;" id="serverLogs">
+      <!-- Les logs seront ajoutés dynamiquement -->
+      <em>Aucun log pour le moment.</em>
+    </div>
+    <h2 id="settingsSection"><span class="icon">⚙️</span> Paramètres rapides</h2>
+    <div style="margin-top:12px;">
+      <button class="admin-btn" onclick="restartServer()">Redémarrer le serveur</button>
+      <button class="admin-btn" onclick="backupServer()">Backup serveur</button>
+      <button class="admin-btn" onclick="clearLogs()">Vider les logs</button>
+    </div>
+    <div class="admin-actions" style="margin-top:30px;">
+      <a href="index.html" class="admin-btn">Retour à la connexion</a>
+    </div>
+  </div>
+  <script src="script.js"></script>
+  <script>
+    // Scroll vers une section
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({behavior: 'smooth'});
+    }
+    // Recherche dans le dashboard
+    function searchDashboard() {
+      const val = document.getElementById('searchInput').value.toLowerCase();
+      // Filtre les tableaux (à compléter dans script.js)
+      // Ex: filterVehicleTable(val); filterPlayerTable(val);
+    }
+    // Actions admin (à compléter côté backend)
+    function restartServer() { alert("Redémarrage demandé !"); }
+    function backupServer() { alert("Backup demandé !"); }
+    function clearLogs() { document.getElementById('serverLogs').innerHTML = "<em>Logs vidés.</em>"; }
+    // Remplir le nom du profil admin si stocké
+    window.addEventListener('DOMContentLoaded', () => {
+      const lastUser = localStorage.getItem('lastAdminUser');
+      if (lastUser) {
+        document.getElementById('profileName').textContent = lastUser;
+      }
+    });
+  </script>
+</body>
+</html>
