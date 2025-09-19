@@ -3,9 +3,9 @@ header('Content-Type: application/json');
 session_start();
 
 // Configuration de la connexion à la base
-$dsn = "mysql:host=localhost;dbname=shreksolution;charset=utf8";
-$dbUser = "shrekuser";
-$dbPass = "2004Athemane";
+$dsn = "mysql:host=VOTRE_HOTE;dbname=VOTRE_NOM_BDD;charset=utf8";
+$dbUser = "VOTRE_UTILISATEUR";
+$dbPass = "VOTRE_MOT_DE_PASSE";
 
 try {
     $pdo = new PDO($dsn, $dbUser, $dbPass, [
